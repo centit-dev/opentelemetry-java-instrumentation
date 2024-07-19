@@ -18,7 +18,7 @@ package io.opentelemetry.instrumentation.spring.autoconfigure.exporters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.opentelemetry.exporters.otlp.OtlpGrpcSpanExporter;
+import io.opentelemetry.exporters.otlpnew.OtlpGrpcSpanExporter;
 import io.opentelemetry.instrumentation.spring.autoconfigure.TracerAutoConfiguration;
 import io.opentelemetry.instrumentation.spring.autoconfigure.exporters.otlp.OtlpGrpcSpanExporterAutoConfiguration;
 import io.opentelemetry.instrumentation.spring.autoconfigure.exporters.otlp.OtlpGrpcSpanExporterProperties;

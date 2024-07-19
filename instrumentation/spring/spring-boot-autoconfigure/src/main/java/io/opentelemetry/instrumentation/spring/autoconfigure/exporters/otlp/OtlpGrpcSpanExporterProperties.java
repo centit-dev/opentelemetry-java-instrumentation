@@ -16,11 +16,13 @@
 
 package io.opentelemetry.instrumentation.spring.autoconfigure.exporters.otlp;
 
-import static io.opentelemetry.exporters.otlp.OtlpGrpcSpanExporter.DEFAULT_DEADLINE_MS;
-import static io.opentelemetry.exporters.otlp.OtlpGrpcSpanExporter.DEFAULT_ENDPOINT;
-
 import java.time.Duration;
+
+import io.opentelemetry.exporters.otlpnew.OtlpGrpcSpanExporter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import static io.opentelemetry.exporters.otlpnew.OtlpGrpcSpanExporter.DEFAULT_DEADLINE_MS;
+import static io.opentelemetry.exporters.otlpnew.OtlpGrpcSpanExporter.DEFAULT_ENDPOINT;
 
 /**
  * Configuration for {@link OtlpGrpcSpanExporter}

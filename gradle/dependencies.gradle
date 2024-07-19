@@ -14,6 +14,7 @@ ext {
 
     // TODO(anuraaga): Switch back to snapshot after release to prepare for next.
     opentelemetry       : '0.8.0',
+    opentelemetryOtlpNew: '0.8.0-otlpnew',
     opentelemetryOther  : '0.8.0',
     opentelemetryAnother: '0.8.0',
 
@@ -40,10 +41,10 @@ ext {
     opentelemetryTraceProps     : dependencies.create(group: 'io.opentelemetry', name: 'opentelemetry-extension-trace-propagators', version: versions.opentelemetryOther),
     opentelemetrySdk            : dependencies.create(group: 'io.opentelemetry', name: 'opentelemetry-sdk', version: versions.opentelemetryOther),
     opentelemetryJaeger         : dependencies.create(group: 'io.opentelemetry', name: 'opentelemetry-exporters-jaeger', version: versions.opentelemetry),
-    opentelemetryOtlp           : dependencies.create(group: 'io.opentelemetry', name: 'opentelemetry-exporters-otlp', version: versions.opentelemetry),
+    opentelemetryOtlp           : dependencies.create(group: 'io.opentelemetry', name: 'opentelemetry-exporters-otlpnew', version: versions.opentelemetryOtlpNew),
     opentelemetryZipkin         : dependencies.create(group: 'io.opentelemetry', name: 'opentelemetry-exporters-zipkin', version: versions.opentelemetryOther),
     opentelemetryLogging        : dependencies.create(group: 'io.opentelemetry', name: 'opentelemetry-exporters-logging', version: versions.opentelemetry),
-    opentelemetryProto          : dependencies.create(group: 'io.opentelemetry', name: 'opentelemetry-proto', version: versions.opentelemetryOther),
+    opentelemetryProto          : dependencies.create(group: 'io.opentelemetry', name: 'opentelemetry-proto', version: versions.opentelemetryOtlpNew),
 
     // General
     slf4j                       : "org.slf4j:slf4j-api:${versions.slf4j}",
