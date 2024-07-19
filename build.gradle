@@ -1,11 +1,9 @@
-import nebula.plugin.release.git.opinion.Strategies
-
 plugins {
   id 'idea'
 
   id "com.jfrog.artifactory" version "4.15.2" apply false
   id 'com.jfrog.bintray' version '1.8.5' apply false
-  id "nebula.release" version "15.0.1"
+//  id "nebula.release" version "15.0.1"
 
   id 'org.gradle.test-retry' version '1.1.8' apply false
 
@@ -20,9 +18,9 @@ plugins {
   id "com.github.spotbugs" version "4.0.1"
 }
 
-release {
-  defaultVersionStrategy = Strategies.SNAPSHOT
-}
+//release {
+//  defaultVersionStrategy = Strategies.SNAPSHOT
+//}
 
 def isCI = System.getenv("CI") != null
 
