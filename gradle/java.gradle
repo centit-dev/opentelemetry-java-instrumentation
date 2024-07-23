@@ -37,8 +37,8 @@ if (project.hasProperty("minJavaVersionForTests")) {
 }
 
 java {
-  sourceCompatibility = JavaVersion.toVersion(project.ext.release)
-  targetCompatibility = JavaVersion.toVersion(project.ext.release)
+  sourceCompatibility = JavaVersion.VERSION_1_7
+  targetCompatibility = JavaVersion.VERSION_1_7
   // See https://docs.gradle.org/current/userguide/upgrading_version_5.html, Automatic target JVM version
   disableAutoTargetJvm()
   withJavadocJar()

@@ -19,9 +19,13 @@ package io.opentelemetry.javaagent.tooling;
 import io.opentelemetry.instrumentation.api.config.Config;
 import io.opentelemetry.javaagent.bootstrap.spi.TracerCustomizer;
 import io.opentelemetry.javaagent.tooling.exporter.DefaultExporterConfig;
+import io.opentelemetry.javaagent.tooling.exporter.LogExporterFactory;
 import io.opentelemetry.javaagent.tooling.exporter.MetricExporterFactory;
 import io.opentelemetry.javaagent.tooling.exporter.SpanExporterFactory;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.logs.SdkLogRecordDataProvider;
+import io.opentelemetry.sdk.logs.export.BatchLogRecordProcessor;
+import io.opentelemetry.sdk.logs.export.LogRecordExporter;
 import io.opentelemetry.sdk.metrics.export.IntervalMetricReader;
 import io.opentelemetry.sdk.metrics.export.MetricExporter;
 import io.opentelemetry.sdk.trace.TracerSdkProvider;
@@ -79,6 +83,14 @@ public class TracerInstaller {
     } else {
       log.debug("No {} metric exporter found", exporterName);
     }
+
+    LogExporterFactory logExporterFactory = findLogExporterFactory(exporterName);
+    if (logExporterFactory != null) {
+      DefaultExporterConfig config = new DefaultExporterConfig("exporter");
+      installExporter(logExporterFactory, config);
+    } else {
+      log.debug("No {} log exporter found", exporterName);
+    }
   }
 
   private static MetricExporterFactory findMetricExporterFactory(String exporterName) {
@@ -108,6 +120,22 @@ public class TracerInstaller {
           .toLowerCase()
           .startsWith(exporterName.toLowerCase())) {
         return spanExporterFactory;
+      }
+    }
+    return null;
+  }
+
+  private static LogExporterFactory findLogExporterFactory(String exporterName) {
+    ServiceLoader<LogExporterFactory> serviceLoader =
+        ServiceLoader.load(LogExporterFactory.class, TracerInstaller.class.getClassLoader());
+
+    for (LogExporterFactory logExporterFactory : serviceLoader) {
+      if (logExporterFactory
+          .getClass()
+          .getSimpleName()
+          .toLowerCase()
+          .startsWith(exporterName.toLowerCase())) {
+        return logExporterFactory;
       }
     }
     return null;
@@ -166,6 +194,17 @@ public class TracerInstaller {
             .build();
     OpenTelemetrySdk.getTracerProvider().addSpanProcessor(spanProcessor);
     log.info("Installed span exporter: " + spanExporter.getClass().getName());
+  }
+
+  private static void installExporter(
+      LogExporterFactory logExporterFactory, DefaultExporterConfig config) {
+    LogRecordExporter logExporter = logExporterFactory.fromConfig(config);
+    BatchLogRecordProcessor processor =
+        BatchLogRecordProcessor.builder(logExporter)
+            .build();
+    SdkLogRecordDataProvider provider = OpenTelemetrySdk.getLoggerProvider();
+    provider.addProcessor(processor);
+    log.info("Installed log exporter: " + logExporter.getClass().getName());
   }
 
   private static <F> F getExporterFactory(Class<F> service, ExporterClassLoader exporterLoader) {
