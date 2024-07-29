@@ -312,7 +312,7 @@ public class Config {
    * Calls {@link #getSettingFromEnvironment(String, String)} and converts the result to a list by
    * splitting on `,`.
    */
-  private static List<String> getListSettingFromEnvironment(String name, String defaultValue) {
+  public static List<String> getListSettingFromEnvironment(String name, String defaultValue) {
     return parseList(getSettingFromEnvironment(name, defaultValue));
   }
 
@@ -323,7 +323,7 @@ public class Config {
   /**
    * Calls {@link #getSettingFromEnvironment(String, String)} and converts the result to a Boolean.
    */
-  private static Boolean getBooleanSettingFromEnvironment(String name, Boolean defaultValue) {
+  public static Boolean getBooleanSettingFromEnvironment(String name, Boolean defaultValue) {
     return getSettingFromEnvironmentWithLog(name, Boolean.class, defaultValue);
   }
 

@@ -2,7 +2,7 @@ apply plugin: 'com.diffplug.gradle.spotless'
 
 spotless {
   java {
-    googleJavaFormat()
+//    googleJavaFormat()
     licenseHeaderFile rootProject.file('gradle/enforcement/spotless.license.java'), '(package|import|public)'
     target 'src/**/*.java'
   }

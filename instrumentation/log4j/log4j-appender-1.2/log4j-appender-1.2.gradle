@@ -1,0 +1,20 @@
+// Set properties before any plugins get loaded
+ext {
+  minJavaVersionForTests = JavaVersion.VERSION_1_8
+}
+
+apply from: "$rootDir/gradle/instrumentation.gradle"
+
+muzzle {
+  pass {
+    group = "log4j"
+    module = "log4j"
+    versions = "[1.2,)"
+  }
+}
+
+dependencies {
+  library group: 'log4j', name: 'log4j', version: '1.2.4'
+
+  testImplementation 'org.awaitility:awaitility:3.0.0'
+}
