@@ -185,6 +185,14 @@ public interface Instrumenter {
             }
           }
           return isMatch;
+        } else {
+          if (log.isDebugEnabled()) {
+            log.debug(
+                "muzzle is null for: {} -- {} on {}",
+                instrumentationPrimaryName,
+                Instrumenter.Default.this.getClass().getName(),
+                classLoader);
+          }
         }
         return true;
       }

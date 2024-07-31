@@ -1,0 +1,85 @@
+package io.opentelemetry.instrumentation.auto.log4j.appender.v2_17;
+
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.instrumentation.api.config.Config;
+import io.opentelemetry.logs.LogRecordBuilder;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.message.Message;
+
+public class Log4jHelper {
+
+  private static final LogEventMapper<Map<String, String>> mapper;
+
+  private static final boolean captureExperimentalAttributes;
+
+  static {
+    captureExperimentalAttributes =
+        Config.getBooleanSettingFromEnvironment("otel.instrumentation.log4j-appender.experimental-log-attributes", false);
+    boolean captureMapMessageAttributes =
+        Config.getBooleanSettingFromEnvironment(
+            "otel.instrumentation.log4j-appender.experimental.capture-map-message-attributes",
+            false);
+    boolean captureMarkerAttribute =
+        Config.getBooleanSettingFromEnvironment(
+            "otel.instrumentation.log4j-appender.experimental.capture-marker-attribute", false);
+    List<String> captureContextDataAttributes =
+        Config.getListSettingFromEnvironment(
+            "otel.instrumentation.log4j-appender.experimental.capture-mdc-attributes", "");
+
+    mapper =
+        new LogEventMapper<>(
+            ContextDataAccessorImpl.INSTANCE,
+            captureExperimentalAttributes,
+            captureMapMessageAttributes,
+            captureMarkerAttribute,
+            captureContextDataAttributes);
+  }
+
+  public static void capture(
+      Logger logger, Level level, Marker marker, Message message, Throwable throwable) {
+    String instrumentationName = logger.getName();
+    if (instrumentationName == null || instrumentationName.isEmpty()) {
+      instrumentationName = "ROOT";
+    }
+    LogRecordBuilder builder = OpenTelemetry
+        .getLogRecordBuilder(instrumentationName)
+        .logRecordBuilder();
+    Map<String, String> contextData = ThreadContext.getImmutableContext();
+
+    String threadName = null;
+    long threadId = -1;
+    if (captureExperimentalAttributes) {
+      Thread currentThread = Thread.currentThread();
+      threadName = currentThread.getName();
+      threadId = currentThread.getId();
+    }
+    mapper.mapLogEvent(
+        builder, message, level, marker, throwable, contextData, threadName, threadId);
+    builder.setTimestamp(System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+    builder.emit();
+  }
+
+  private enum ContextDataAccessorImpl implements ContextDataAccessor<Map<String, String>> {
+    INSTANCE;
+
+    @Override
+    public Object getValue(Map<String, String> contextData, String key) {
+      return contextData.get(key);
+    }
+
+    @Override
+    public void forEach(Map<String, String> contextData, BiConsumer<String, Object> action) {
+      for (Map.Entry<String, String> entry : contextData.entrySet()) {
+        action.accept(entry.getKey(), entry.getValue());
+      }
+    }
+  }
+
+  private Log4jHelper() {}
+}
