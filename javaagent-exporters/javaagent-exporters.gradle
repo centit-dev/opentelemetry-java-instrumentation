@@ -53,6 +53,8 @@ shadowJar {
   relocate 'org.slf4j', 'io.opentelemetry.javaagent.slf4j'
   // rewrite dependencies calling Logger.getLogger
   relocate 'java.util.logging.Logger', 'io.opentelemetry.javaagent.bootstrap.PatchLogger'
+  // this is for instrumentation on java.util.logging (since java.util.logging itself is shaded above)
+  relocate("application.java.util.logging", "java.util.logging")
 
   // relocate OpenTelemetry API usage
   relocate "io.opentelemetry.OpenTelemetry", "io.opentelemetry.javaagent.shaded.io.opentelemetry.OpenTelemetry"

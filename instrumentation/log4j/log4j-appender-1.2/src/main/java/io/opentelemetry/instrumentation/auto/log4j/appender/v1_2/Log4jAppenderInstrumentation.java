@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.opentelemetry.javaagent.instrumentation.log4j.appender.v1_2;
+package io.opentelemetry.instrumentation.auto.log4j.appender.v1_2;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +48,14 @@ public class Log4jAppenderInstrumentation extends Instrumenter.Default {
   @Override
   public ElementMatcher<TypeDescription> typeMatcher() {
     return named("org.apache.log4j.Category");
+  }
+
+  @Override
+  public String[] helperClassNames() {
+    return new String[] {
+      "io.opentelemetry.instrumentation.auto.log4j.appender.v1_2.LogEventMapper",
+      "io.opentelemetry.instrumentation.auto.log4j.appender.v1_2.LoggerHelper"
+    };
   }
 
   @Override

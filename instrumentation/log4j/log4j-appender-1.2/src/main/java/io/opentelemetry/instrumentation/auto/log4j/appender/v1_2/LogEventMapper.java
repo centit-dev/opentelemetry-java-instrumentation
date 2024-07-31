@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.opentelemetry.javaagent.instrumentation.log4j.appender.v1_2;
+package io.opentelemetry.instrumentation.auto.log4j.appender.v1_2;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,6 +23,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import io.grpc.Context;
 import io.opentelemetry.OpenTelemetry;
@@ -38,7 +41,7 @@ import org.apache.log4j.Priority;
 
 public final class LogEventMapper {
 
-  private static final Map<String, String> mdcAttributeKeys = new HashMap<>();
+  private static final Cache<String, String> mdcAttributeKeys = CacheBuilder.newBuilder().maximumSize(100).build();
 
   public static final LogEventMapper INSTANCE = new LogEventMapper();
 
@@ -139,11 +142,11 @@ public final class LogEventMapper {
   }
 
   private static String getMdcAttributeKey(String key) {
-    if (!mdcAttributeKeys.containsKey(key)) {
+    if (mdcAttributeKeys.getIfPresent(key) != null) {
       mdcAttributeKeys.put(key, "log4j.mdc." + key);
     }
 
-    return mdcAttributeKeys.get(key);
+    return mdcAttributeKeys.getIfPresent(key);
   }
 
   private static Severity levelToSeverity(Priority level) {
