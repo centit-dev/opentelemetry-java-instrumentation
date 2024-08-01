@@ -1,0 +1,9 @@
+apply from: "$rootDir/gradle/instrumentation.gradle"
+
+muzzle {
+    pass {
+        coreJdk()
+    }
+}
+
+dependencies {}
