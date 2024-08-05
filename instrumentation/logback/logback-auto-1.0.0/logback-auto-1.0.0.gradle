@@ -1,0 +1,14 @@
+apply from: "$rootDir/gradle/instrumentation.gradle"
+
+muzzle {
+    pass {
+        group = "ch.qos.logback"
+        module = "logback-classic"
+        versions = "[1.0.0,)"
+    }
+}
+
+dependencies {
+    library group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.0'
+    latestDepTestLibrary group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.+'
+}
