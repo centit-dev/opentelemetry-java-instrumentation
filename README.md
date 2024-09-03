@@ -1,3 +1,11 @@
+# 变更记录
+* feat(instrumentation): 添加 logback 日志
+* feat(instrumentation): 添加 jdbc 扩展
+* feat(instrumentation): 添加更多日志框架
+* feat(otlp): otlp 导出日志
+* fix(gradle): 修复构建
+* feat(otlp): otlp 导出现代 proto
+
 # OpenTelemetry Instrumentation for Java
 
 ## Join the discussions!
